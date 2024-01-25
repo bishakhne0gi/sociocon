@@ -3,6 +3,13 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 
+// ROUTES
+
+//routes import
+import userRouter from "./route/user.route.js";
+
+
+//creation of instance of express
 const app = express();
 
 //app.use--> middleware
@@ -35,7 +42,13 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 
+//routes declaration
+app.use("/api/v1/users", userRouter);
 
+
+
+//URL WILL BE:
+// https://localhost:8000/api/v1/users/register
 
 
 export default app;
