@@ -13,44 +13,37 @@ const userSchema = new Schema(
             trim: true,
             index: true
         },
-        email:
-        {
+        email: {
             type: String,
             required: true,
             unique: true,
             lowercase: true,
             trim: true
         },
-        fullname:
-        {
+        fullname: {
             type: String,
             required: true,
             trim: true,
             index: true
         },
-        avatar:
-        {
+        avatar: {
             type: String, //cloudinary url
             required: true,
         },
-        coverImage:
-        {
+        coverImage: {
             type: String
         },
-        watchHistory:
-            [
-                {
-                    type: Schema.Types.ObjectId,
-                    ref: "Video"
-                }
-            ],
-        password:
-        {
+        watchHistory: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Video"
+            }
+        ],
+        password: {
             type: String,
             required: [true, 'Password is required']
         },
-        refreshToken:
-        {
+        refreshToken: {
             type: String
         }
 
@@ -65,10 +58,10 @@ const userSchema = new Schema(
 
 
 //pre hook
-userSchema.pre("save", function (next) {
+userSchema.pre("save", async function (next) {
 
     if (this.isModified("password")) {
-        this.password = bcrypt.hash(this.password, 10);
+        this.password = await bcrypt.hash(this.password, 10);
         next();
     }
     else {
