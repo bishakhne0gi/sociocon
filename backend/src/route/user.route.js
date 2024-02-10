@@ -1,11 +1,11 @@
 import { Router } from "express";
-import registerUser from "../controller/user.controller.js";
+import { loginUser, logoutUser, registerUser } from "../controller/user.controller.js";
 import { upload } from '../middleware/multer.middleware.js';
-
+import asyncHandler from "../utils/asyncHandler.js";
+import verifyJwt from '../middleware/auth.middleware.js'
 
 
 const router = Router();
-
 
 router.route("/register").post(
     upload.fields([
@@ -18,5 +18,18 @@ router.route("/register").post(
             maxCount: 1
         }
     ]),
-    registerUser)
+    asyncHandler(registerUser)
+)
+
+
+router.route("/login").post(
+    loginUser
+)
+
+
+//secured routes
+router.route("/logout").post(
+    verifyJwt,
+    logoutUser)
+
 export default router;
