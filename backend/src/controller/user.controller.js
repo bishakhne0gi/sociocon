@@ -181,63 +181,83 @@ const loginUser = asyncHandler(async (request, response) => {
     */
 
 
-    const { username, email, password } = request.body;
+    try {
+        const { username, email, password } = request.body;
 
-    if (!username && !email) {
-        throw new ApiError(
-            400,
-            "username or password is required"
-        )
-    }
-
-    const user = await User.findOne({
-        $or: [{ username }, { email }]
-    })
-
-    if (!user) {
-        throw new ApiError(
-            400,
-            "user does not exist!"
-        )
-    }
-
-    const isPasswordValid = await user.isPasswordCorrect(password);
-
-    if (!isPasswordValid) {
-        throw new ApiError(
-            401,
-            "invalid credential!"
-        )
-    }
-
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+        // console.log(`Username--->${username}, Email--->${email}, Password--->${password}`);
 
 
-    const loggedInUser = User.findById(user._id)
-        .select("-password -refreshToken")
-
-    const options =
-    {
-        httpOnly: true,
-        secure: true
-    }
-
-
-    return response
-        .status(
-            200
-        )
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
-        .json(
-            new ApiResponse(
-                200,
-                {
-                    user: loggedInUser, accessToken, refreshToken
-                },
-                "User logged in successfully"
+        if (!username && !email) {
+            throw new ApiError(
+                400,
+                "username or password is required"
             )
-        )
+        }
+
+        const user = await User.findOne({
+            $or: [{ username }, { email }]
+        })
+
+        // console.log(`User--->${user}`);
+        if (!user) {
+            throw new ApiError(
+                400,
+                "user does not exist!"
+            )
+        }
+
+        const isPasswordValid = await user.isPasswordCorrect(password);
+
+        // console.log(`Is Password Valid--->${isPasswordValid}`);
+        if (!isPasswordValid) {
+            throw new ApiError(
+                401,
+                "invalid credential!"
+            )
+        }
+
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+        // console.log(`Access Token--->${accessToken}, Refresh Token--->${refreshToken}`);
+
+        const loggedInUser = await User.findById(user._id)
+            .select("-password -refreshToken")
+
+        // console.log(`Logged In User--->${loggedInUser}`);
+
+
+        const options =
+        {
+            httpOnly: true,
+            secure: true
+        }
+
+
+        return await response
+            .status(
+                200
+            )
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json(
+                new ApiResponse(
+                    200,
+                    {
+                        user: loggedInUser, accessToken, refreshToken
+                    },
+                    "User logged in successfully"
+                )
+            )
+    }
+    catch (error) {
+
+
+        console.error("Error:", error);
+        return response.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
 })
 
 
@@ -247,7 +267,7 @@ const logoutUser = asyncHandler(async (request, response) => {
         request.user._id,
         {
             $set: {
-                refreshToken: undefined
+                refreshToken: 1
             }
         },
         {
@@ -270,9 +290,11 @@ const logoutUser = asyncHandler(async (request, response) => {
         .json(new ApiResponse(
             200,
             {},
-            "User logged out"
+            "User logged out successfully"
         ))
-})
+}
+
+)
 
 
 
