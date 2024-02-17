@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
 
 
 // ROUTES
@@ -17,7 +18,7 @@ const app = express();
 //options of cors
 app.use(cors(
     {
-        origin: process.env.CORS_ORIGIN,
+        origin: process.env.CLIENT_ORIGIN,
         credentials: true
     }
 ));
@@ -34,6 +35,8 @@ app.use(express.urlencoded(
         limit: "15kb"
     }
 ))
+
+app.use(morgan('tiny'))
 
 //accepting public assessts like--->files,folders of pdf,images
 app.use(express.static("public"));
