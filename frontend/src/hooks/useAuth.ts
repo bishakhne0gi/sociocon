@@ -10,7 +10,8 @@ interface RegisterFormData {
     username: string;
     email: string;
     fullname: string;
-    avatar: string;
+    avatar: File | null;
+    coverImage: File | null;
     password: string;
 }
 
@@ -50,4 +51,20 @@ export const useLogout = () => {
 
 
     return { logout, error };
+}
+
+export const useRegister = () => {
+    const [error, setError] = useState<string | null>(null);
+
+    const register = async (data: RegisterFormData) => {
+        try {
+            const response: any = await api.post('users/register', data);
+            return response;
+        } catch (error: any) {
+            setError(error.message);
+            throw error;
+        }
+    }
+
+    return { register, error };
 }

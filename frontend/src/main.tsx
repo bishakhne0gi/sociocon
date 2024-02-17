@@ -3,7 +3,7 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout.tsx";
 import { Landing } from "./containers/index.ts";
-import { Login } from "./components/index.ts";
+import { Login, Register } from "./components/index.ts";
 import axios from "axios";
 
 axios.defaults.baseURL = import.meta.env.VITE_APP_API_BASE_URL;
@@ -20,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
       },
     ],
   },
