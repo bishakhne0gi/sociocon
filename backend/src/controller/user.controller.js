@@ -45,8 +45,6 @@ const registerUser = asyncHandler(async (request, response) => {
 
         const { username, email, fullname, password } = request.body
 
-
-        // console.log(`${JSON.stringify(request.body)}`);
         const emailValidation = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (
@@ -228,6 +226,7 @@ const loginUser = asyncHandler(async (request, response) => {
 
         const options =
         {
+            maxAge: 10 * 1000,
             httpOnly: true,
             // secure: true
             // domain: "http://localhost:5173/"

@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -8,7 +7,7 @@ import { Login } from "./components/index.ts";
 import axios from "axios";
 
 axios.defaults.baseURL = import.meta.env.VITE_APP_API_BASE_URL;
-// console.log(`API base URL is ${axios.defaults.baseURL}`);
+axios.defaults.withCredentials = true;
 
 const router = createBrowserRouter([
   {
@@ -26,7 +25,5 @@ const router = createBrowserRouter([
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <RouterProvider router={router} />
 );
