@@ -4,18 +4,16 @@ import { useLogin, useLogout } from "../../hooks/useAuth";
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const { login, error } = useLogin();
+  console.log(error);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { logout } = useLogout();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = await login(formData);
+      await login(formData);
 
       setIsLoggedIn(true);
-
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
     } catch (error) {
       setIsLoggedIn(false);
     }
@@ -25,15 +23,8 @@ const Login: React.FC = () => {
     logout();
     setIsLoggedIn(false);
 
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-
     // Call the logout endpoint with tokens
     await logout();
-
-    // Clear tokens from local storage
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
   };
 
   return (

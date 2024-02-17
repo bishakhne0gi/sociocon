@@ -226,11 +226,9 @@ const loginUser = asyncHandler(async (request, response) => {
 
         const options =
         {
-            maxAge: 10 * 1000,
+            maxAge: 30 * 1000,
             httpOnly: true,
             // secure: true
-            // domain: "http://localhost:5173/"
-
         }
 
 
@@ -244,7 +242,7 @@ const loginUser = asyncHandler(async (request, response) => {
                 new ApiResponse(
                     200,
                     {
-                        user: loggedInUser, accessToken, refreshToken
+                        user: loggedInUser
                     },
                     "User logged in successfully"
                 )
@@ -275,19 +273,12 @@ const logoutUser = asyncHandler(async (request, response) => {
             new: true
         }
     )
-
-
-
-    const options =
-    {
-        httpOnly: true,
-        // secure: true
-    }
+    
 
     return response
         .status(200)
-        .clearCookie("accessToken", options)
-        .clearCookie("refreshToken", options)
+        .clearCookie("accessToken")
+        .clearCookie("refreshToken")
         .json(new ApiResponse(
             200,
             {},
