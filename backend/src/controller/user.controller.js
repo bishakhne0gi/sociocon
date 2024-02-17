@@ -184,7 +184,7 @@ const loginUser = asyncHandler(async (request, response) => {
     try {
         const { username, email, password } = request.body;
 
-        // console.log(`Username--->${username}, Email--->${email}, Password--->${password}`);
+        console.log(`Username--->${username}, Email--->${email}, Password--->${password}`);
 
 
         if (!username && !email) {
@@ -223,13 +223,15 @@ const loginUser = asyncHandler(async (request, response) => {
         const loggedInUser = await User.findById(user._id)
             .select("-password -refreshToken")
 
-        // console.log(`Logged In User--->${loggedInUser}`);
+        console.log(`Logged In User--->${loggedInUser}`);
 
 
         const options =
         {
             httpOnly: true,
-            secure: true
+            // secure: true
+            // domain: "http://localhost:5173/"
+
         }
 
 
@@ -280,7 +282,7 @@ const logoutUser = asyncHandler(async (request, response) => {
     const options =
     {
         httpOnly: true,
-        secure: true
+        // secure: true
     }
 
     return response
@@ -332,7 +334,7 @@ const refreshAccessToken = asyncHandler(async (request, response) => {
         const options =
         {
             httpOnly: true,
-            secure: true
+            // secure: true
         }
 
         const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user._id)
