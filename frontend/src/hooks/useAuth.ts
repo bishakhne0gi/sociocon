@@ -1,23 +1,9 @@
+import { LoginFormData, RegisterFormData } from "@/models/auth.model";
 import { api } from "../api/api";
 import { useState } from "react";
 
-interface LoginFormData {
-    username: string;
-    password: string;
-}
-
-interface RegisterFormData {
-    username: string;
-    email: string;
-    fullname: string;
-    avatar: File | null;
-    coverImage: File | null;
-    password: string;
-}
-
 
 export const useLogin = () => {
-
     const [error, setError] = useState<string | null>(null);
 
     const login = async (data: LoginFormData) => {
@@ -31,11 +17,8 @@ export const useLogin = () => {
         }
     }
 
-
     return { login, error };
-
 }
-
 
 
 export const useLogout = () => {
@@ -49,9 +32,9 @@ export const useLogout = () => {
         }
     }
 
-
     return { logout, error };
 }
+
 
 export const useRegister = () => {
     const [error, setError] = useState<string | null>(null);

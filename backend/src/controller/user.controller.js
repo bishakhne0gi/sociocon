@@ -6,7 +6,7 @@ import uploadCloudinary from '../utils/cloudinary.js';
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from 'jsonwebtoken';
 
-const generateAccessAndRefreshTokens = async (userId) => {
+export const generateAccessAndRefreshTokens = async (userId) => {
     try {
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
@@ -27,7 +27,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
 
 
-const registerUser = asyncHandler(async (request, response) => {
+export const registerUser = asyncHandler(async (request, response) => {
     //Steps for registering user
     /*
     1. Get user details from frontend 
@@ -42,7 +42,6 @@ const registerUser = asyncHandler(async (request, response) => {
     */
 
     try {
-
         const { username, email, fullname, password } = request.body
 
         const emailValidation = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -68,14 +67,6 @@ const registerUser = asyncHandler(async (request, response) => {
             )
         }
 
-
-        //     console.log(`
-        // Username--->${username},
-        // Email--->${email},
-        // Password-->${password},
-
-        // `);
-
         //check whether the user is already registered or not
         const existedUser = await User.findOne({
             $or: [{ username }, { email }]
@@ -88,13 +79,12 @@ const registerUser = asyncHandler(async (request, response) => {
             )
         }
 
-        console.log(`Request File: ${JSON.stringify(request.files)}`);
-        const fileJson = request.files;
-        const avatarLocalPath = fileJson?.avatar[0]?.path
+        const files = request.files;
+        const avatarLocalPath = files?.avatar[0]?.path;
         console.log("Avatar Local Path", avatarLocalPath);
 
         let coverImageLocalPath;
-        if (request.files && Array.isArray(request.files.coverImage) && request.files.coverImage.length > 0) {
+        if (files && Array.isArray(request.files.coverImage) && request.files.coverImage.length > 0) {
             coverImageLocalPath = request.files.coverImage[0].path
         }
 
@@ -106,11 +96,9 @@ const registerUser = asyncHandler(async (request, response) => {
         }
 
 
-        //upload in the cloudinary
-        const avatar = await uploadCloudinary(avatarLocalPath);
-        const coverImage = await uploadCloudinary(coverImageLocalPath);
-
-        // console.log(`Avatar url--->${avatar}`);
+        // Upload in the cloudinary
+        // const avatar = await uploadCloudinary(avatarLocalPath);
+        // const coverImage = await uploadCloudinary(coverImageLocalPath);
 
         if (!avatar) {
             throw new ApiError(
@@ -133,9 +121,7 @@ const registerUser = asyncHandler(async (request, response) => {
             }
         )
 
-        const createdUser = await User.findById(user._id).select(
-            "-password -refreshToken"
-        );
+        const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
         if (!createdUser) {
             throw new ApiError(
@@ -167,7 +153,7 @@ const registerUser = asyncHandler(async (request, response) => {
 })
 
 
-const loginUser = asyncHandler(async (request, response) => {
+export const loginUser = asyncHandler(async (request, response) => {
     /*
     1. request body -> data
     2. username/ email
@@ -260,21 +246,8 @@ const loginUser = asyncHandler(async (request, response) => {
 })
 
 
-const logoutUser = asyncHandler(async (request, response) => {
-
-    await User.findByIdAndUpdate(
-        request.user._id,
-        {
-            $set: {
-                refreshToken: 1
-            }
-        },
-        {
-            new: true
-        }
-    )
+export const logoutUser = asyncHandler(async (request, response) => {
     
-
     return response
         .status(200)
         .clearCookie("accessToken")
@@ -284,11 +257,9 @@ const logoutUser = asyncHandler(async (request, response) => {
             {},
             "User logged out successfully"
         ))
-}
+})
 
-)
-
-const refreshAccessToken = asyncHandler(async (request, response) => {
+export const refreshAccessToken = asyncHandler(async (request, response) => {
     const incomingRefreshToken = request.cookies.refreshToken || request.body.refreshToken;
 
     if (!incomingRefreshToken) {
@@ -347,7 +318,4 @@ const refreshAccessToken = asyncHandler(async (request, response) => {
         )
     }
 
-}
-)
-
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+})
