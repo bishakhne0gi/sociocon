@@ -10,7 +10,7 @@ const uploadCloudinary = async (localFilePath) => {
     try {
         if (!localFilePath) {
             // console.log(`Could not find path--->${localFilePath}`);
-            return null;
+            return;
         }
         //upload the file in cloudinary
         const response = await cloudinary.uploader.upload(localFilePath, {

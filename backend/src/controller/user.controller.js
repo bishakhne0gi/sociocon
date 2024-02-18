@@ -79,17 +79,10 @@ export const registerUser = asyncHandler(async (request, response) => {
             )
         }
 
-        const files = request.files;
+        const { avatar, coverImage } = request.files;
 
-        console.log(files)
-        const avatarLocalPath = files?.avatar[0]?.path;
-        console.log("Avatar Local Path", avatarLocalPath);
-
-        let coverImageLocalPath;
-        if (files && Array.isArray(request.files.coverImage) && request.files.coverImage.length > 0) {
-            coverImageLocalPath = request.files.coverImage[0].path
-        }
-
+        const avatarLocalPath = avatar ? avatar[0].path : null
+        // console.log("Avatar Local Path --> ", avatarLocalPath);
         if (!avatarLocalPath) {
             throw new ApiError(
                 400,
@@ -97,12 +90,14 @@ export const registerUser = asyncHandler(async (request, response) => {
             )
         }
 
+        const coverImageLocalPath = coverImage ? coverImage[0].path : null
+
 
         // Upload in the cloudinary
-        const avatar = await uploadCloudinary(avatarLocalPath);
-        const coverImage = await uploadCloudinary(coverImageLocalPath);
+        const avatarURL = await uploadCloudinary(avatarLocalPath);
+        const coverImageURL = await uploadCloudinary(coverImageLocalPath);
 
-        if (!avatar) {
+        if (!avatarURL) {
             throw new ApiError(
                 400,
                 "Avatar File is not provided"
@@ -117,9 +112,8 @@ export const registerUser = asyncHandler(async (request, response) => {
                 email,
                 fullname,
                 password,
-                avatar: avatar.url,
-                coverImage: coverImage?.url || ""
-
+                avatar: avatarURL.url,
+                coverImage: coverImageURL.url ?? ""
             }
         )
 
