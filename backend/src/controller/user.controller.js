@@ -80,6 +80,8 @@ export const registerUser = asyncHandler(async (request, response) => {
         }
 
         const files = request.files;
+
+        console.log(files)
         const avatarLocalPath = files?.avatar[0]?.path;
         console.log("Avatar Local Path", avatarLocalPath);
 
@@ -97,8 +99,8 @@ export const registerUser = asyncHandler(async (request, response) => {
 
 
         // Upload in the cloudinary
-        // const avatar = await uploadCloudinary(avatarLocalPath);
-        // const coverImage = await uploadCloudinary(coverImageLocalPath);
+        const avatar = await uploadCloudinary(avatarLocalPath);
+        const coverImage = await uploadCloudinary(coverImageLocalPath);
 
         if (!avatar) {
             throw new ApiError(
@@ -247,7 +249,7 @@ export const loginUser = asyncHandler(async (request, response) => {
 
 
 export const logoutUser = asyncHandler(async (request, response) => {
-    
+
     return response
         .status(200)
         .clearCookie("accessToken")

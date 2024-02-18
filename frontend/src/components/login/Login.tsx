@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useLogin, useLogout } from "../../hooks/useAuth";
-import { Register } from "..";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
